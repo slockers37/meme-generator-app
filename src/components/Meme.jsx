@@ -1,4 +1,5 @@
 import React from "react";
+import { fabric } from "fabric";
 
 export default function Meme() {
   const [meme, setMeme] = React.useState({
@@ -34,6 +35,26 @@ export default function Meme() {
     }));
   }
 
+  function handleDownload() {
+    const canvas = new fabric.StaticCanvas();
+    const imgElement = document.getElementById("meme");
+    const imgInstance = new fabric.Image(imgElement, { left: 0, top: 0 });
+    const text = new fabric.Text(meme.topText, { left: 10, top: 10 });
+
+    canvas.add(imgInstance);
+    canvas.add(text);
+
+    const dataURL = canvas.toDataURL({
+      format: "png",
+      quality: 1,
+    });
+
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = "meme.png";
+    link.click();
+  }
+
   return (
     <main>
       <div className="form">
@@ -58,9 +79,13 @@ export default function Meme() {
         </button>
       </div>
       <div className="meme">
-        <img src={meme.randomImage} className="meme--image" />
+        <img id="meme" src={meme.randomImage} className="meme--image" />
+        {/* <img src={meme.randomImage} className="meme--image" /> */}
         <h2 className="meme--text top">{meme.topText}</h2>
-        <h2 className="meme--text bottom">{meme.bottomText}</h2>
+        {/* <h2 className="meme--text bottom">{meme.bottomText}</h2> */}
+        <button onClick={handleDownload} className="form--button">
+          Download Meme
+        </button>
       </div>
     </main>
   );
